@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VicRoUnix Voting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Fondo de galaxia oscuro */
+            background-color: #000;
+            background-image: radial-gradient(ellipse at top, #1B2735 0%, #090A0F 100%);
+            overflow-x: hidden; /* Evita scroll horizontal */
+        }
+
+        /* Estilo de "Glassmorphism" para los paneles */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05); /* Fondo muy sutil */
+            backdrop-filter: blur(10px); /* El efecto de desenfoque */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Borde sutil */
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Brillo Neón - Dubstep (Cyan) */
+        .neon-dubstep {
+            border-color: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), inset 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+        .neon-dubstep:hover {
+            transform: scale(1.03);
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+        }
+
+        /* Brillo Neón - Raw (Purple) */
+        .neon-raw {
+            border-color: rgba(192, 0, 255, 0.3);
+            box-shadow: 0 0 10px rgba(192, 0, 255, 0.3), inset 0 0 10px rgba(192, 0, 255, 0.2);
+        }
+        .neon-raw:hover {
+            transform: scale(1.03);
+            border-color: rgba(192, 0, 255, 0.8);
+            box-shadow: 0 0 30px rgba(192, 0, 255, 0.6);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-white">
+
+    <!-- Header -->
+    <header class="p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold tracking-wider opacity-90">
+            <span class="bg-indigo-500/50 px-2 py-1 rounded-md shadow-lg">
+                VicRoUnix Voting
+            </span>
+        </h1>
+    </header>
+
+    <!-- Contenido Principal: Dos Paneles Flotantes -->
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+        
+        <h2 class="text-3xl font-bold text-gray-300 mb-8 uppercase tracking-widest">
+            Elige tu Estilo
+        </h2>
+
+        <!-- Contenedor de los paneles de votación -->
+        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+            
+            <!-- Panel DUBSTEP -->
+            <button id="vote-dubstep" class="vote-btn glass-panel neon-dubstep rounded-2xl p-8 text-center flex flex-col items-center justify-center h-64 md:h-80 focus:outline-none">
+                <!-- Icono -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-4 text-cyan-300"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                <!-- Título -->
+                <h3 class="text-4xl font-extrabold uppercase text-white mb-3">Dubstep</h3>
+                <!-- Conteo -->
+                <span id="dubstep-count" class="text-5xl font-bold text-cyan-300">0</span>
+            </button>
+
+            <!-- Panel RAW -->
+            <button id="vote-raw" class="vote-btn glass-panel neon-raw rounded-2xl p-8 text-center flex flex-col items-center justify-center h-64 md:h-80 focus:outline-none">
+                <!-- Icono -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-4 text-purple-300"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"></path></svg>
+                <!-- Título -->
+                <h3 class="text-4xl font-extrabold uppercase text-white mb-3">Raw</h3>
+                <!-- Conteo -->
+                <span id="raw-count" class="text-5xl font-bold text-purple-300">0</span>
+            </button>
+
+        </div>
+        
+        <!-- Info de Procesamiento -->
+        <div class="mt-10 text-center">
+            <p class="text-xs text-gray-400 opacity-50">
+                <span class="font-mono bg-gray-900/50 px-2 py-1 rounded">
+                    Procesado por el contenedor: <strong>vote</strong>
+                </span>
+            </p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-4 text-center">
+        <!-- CAMBIO: Pie de página genérico -->
+        <p class="text-sm opacity-50">&copy; 2025 Voting App</p>
+    </footer>
+
+    <script>
+        // --- El JavaScript no necesita cambios lógicos ---
+
+        const voteDubstepBtn = document.getElementById('vote-dubstep');
+        const voteRawBtn = document.getElementById('vote-raw');
+        const dubstepCountEl = document.getElementById('dubstep-count');
+        const rawCountEl = document.getElementById('raw-count');
+        const buttons = document.querySelectorAll('.vote-btn');
+
+        async function sendVote(voteOption) {
+            buttons.forEach(btn => btn.disabled = true);
+            try {
+                const response = await fetch(window.location.origin + '/vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vote: voteOption }),
+                });
+                if (!response.ok) throw new Error('Error al votar');
+                getResults();
+            } catch (error) {
+                console.error('Hubo un error:', error);
+            } finally {
+                // Habilita los botones después de un breve retraso para que el brillo se vea
+                setTimeout(() => {
+                    buttons.forEach(btn => btn.disabled = false);
+                }, 300);
+            }
+        }
+
+        async function getResults() {
+            try {
+                const response = await fetch(window.location.origin + '/results');
+                if (!response.ok) throw new Error('Error al obtener resultados');
+                const data = await response.json();
+                
+                dubstepCountEl.textContent = data.dubstep;
+                rawCountEl.textContent = data.raw;
+            } catch (error)
+ {
+                console.error('Hubo un error:', error);
+            }
+        }
+
+        voteDubstepBtn.addEventListener('click', () => sendVote('dubstep'));
+        voteRawBtn.addEventListener('click', () => sendVote('raw'));
+
+        document.addEventListener('DOMContentLoaded', () => {
+            getResults();
+            setInterval(getResults, 2000);
+        });
+    </script>
+</body>
+</html>

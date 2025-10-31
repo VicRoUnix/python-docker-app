@@ -9,7 +9,7 @@ from psycopg2 import OperationalError
 app = Flask(__name__)
 
 # Configura el logging
-logging.basicCOnfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 # ~ Conexion a Redis ~
 redis_host = os.environ.get('REDIS_HOST', 'localhost')
@@ -64,6 +64,11 @@ db_conn = connect_to_postgres()
 def index():
     # Landing page
     return render_template('index.html')
+
+@app.route('/stats')
+def stats_page():
+    # Result page
+    return render_template('results.html')
 
 @app.route('/vote', methods=['POST'])
 def vote():

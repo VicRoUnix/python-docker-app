@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Votación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            background-image: radial-gradient(ellipse at top, #1B2735 0%, #090A0F 100%);
+            overflow-x: hidden;
+        }
+        /* Estilo para las barras */
+        .bar {
+            transition: height 0.5s ease-in-out, background-color 0.5s ease-in-out;
+            transform-origin: bottom;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center text-white p-4">
+
+    <header class="absolute top-4 left-4">
+        <a href="/" class="text-cyan-300 hover:text-cyan-100 transition-colors">&larr; Volver a la votación</a>
+    </header>
+
+    <main class="w-full max-w-2xl text-center">
+        <h1 class="text-4xl font-extrabold uppercase tracking-widest text-gray-300 mb-10">
+            Resultados en Vivo
+        </h1>
+
+        <!-- Contenedor del Gráfico -->
+        <div class="glass-panel bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:p-10">
+            
+            <div class="flex items-end justify-center gap-6 md:gap-12 min-h-[400px]">
+                
+                <!-- Barra DUBSTEP -->
+                <div class="flex flex-col items-center w-32">
+                    <span id="dubstep-percent" class="text-3xl font-bold text-cyan-300 mb-2">0%</span>
+                    <div id="dubstep-bar" class="bar w-full rounded-t-lg bg-cyan-500 shadow-2xl shadow-cyan-500/50" style="height: 0px;"></div>
+                    <h2 class="mt-4 text-xl font-bold uppercase">Dubstep</h2>
+                    <span id="dubstep-count" class="text-lg text-gray-400">0 votos</span>
+                </div>
+
+                <!-- Barra RAW -->
+                <div class="flex flex-col items-center w-32">
+                    <span id="raw-percent" class="text-3xl font-bold text-purple-300 mb-2">0%</span>
+                    <div id="raw-bar" class="bar w-full rounded-t-lg bg-purple-500 shadow-2xl shadow-purple-500/50" style="height: 0px;"></div>
+                    <h2 class="mt-4 text-xl font-bold uppercase">Raw</h2>
+                    <span id="raw-count" class="text-lg text-gray-400">0 votos</span>
+                </div>
+
+            </div>
+            
+            <div class="mt-8 border-t border-white/10 pt-4">
+                <h3 class="text-lg font-bold text-gray-300">Total de Votos</h3>
+                <span id="total-count" class="text-4xl font-extrabold">0</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const dubstepBar = document.getElementById('dubstep-bar');
+        const rawBar = document.getElementById('raw-bar');
+        const dubstepCountEl = document.getElementById('dubstep-count');
+        const rawCountEl = document.getElementById('raw-count');
+        const dubstepPercentEl = document.getElementById('dubstep-percent');
+        const rawPercentEl = document.getElementById('raw-percent');
+        const totalCountEl = document.getElementById('total-count');
+
+        const MAX_BAR_HEIGHT = 300; // Altura máxima en píxeles para la barra
+
+        async function getResults() {
+            try {
+                // Esta página USA LA MISMA API /results que el index
+                const response = await fetch(window.location.origin + '/results');
+                if (!response.ok) throw new Error('Error al obtener resultados');
+                
+                const data = await response.json();
+                
+                const dubstepVotes = data.dubstep;
+                const rawVotes = data.raw;
+                const totalVotes = dubstepVotes + rawVotes;
+
+                // Calcular porcentajes
+                const dubstepPercent = totalVotes === 0 ? 0 : Math.round((dubstepVotes / totalVotes) * 100);
+                const rawPercent = totalVotes === 0 ? 0 : 100 - dubstepPercent; // Simple para que sume 100
+                
+                // Calcular alturas de las barras
+                let dubstepHeight = 0;
+                let rawHeight = 0;
+
+                if (totalVotes > 0) {
+                    if (dubstepVotes > rawVotes) {
+                        dubstepHeight = MAX_BAR_HEIGHT;
+                        rawHeight = (rawVotes / dubstepVotes) * MAX_BAR_HEIGHT;
+                    } else if (rawVotes > dubstepVotes) {
+                        rawHeight = MAX_BAR_HEIGHT;
+                        dubstepHeight = (dubstepVotes / rawVotes) * MAX_BAR_HEIGHT;
+                    } else { // Empate
+                        dubstepHeight = MAX_BAR_HEIGHT;
+                        rawHeight = MAX_BAR_HEIGHT;
+                    }
+                }
+                
+                // Actualizar el texto
+                dubstepCountEl.textContent = `${dubstepVotes} votos`;
+                rawCountEl.textContent = `${rawVotes} votos`;
+                dubstepPercentEl.textContent = `${dubstepPercent}%`;
+                rawPercentEl.textContent = `${rawPercent}%`;
+                totalCountEl.textContent = totalVotes;
+                
+                // Actualizar la altura de las barras
+                dubstepBar.style.height = `${dubstepHeight}px`;
+                rawBar.style.height = `${rawHeight}px`;
+
+            } catch (error) {
+                console.error('Hubo un error:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            getResults();
+            setInterval(getResults, 2000); // Actualiza cada 2 segundos
+        });
+    </script>
+</body>
