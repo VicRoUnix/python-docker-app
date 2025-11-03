@@ -61,8 +61,8 @@ Para levantar todo el sistema en tu máquina local:
 1.  **Clona el repositorio:**
 
     ```bash
-    git clone [https://github.com/tu-usuario/tu-repositorio.git](https://github.com/tu-usuario/tu-repositorio.git)
-    cd tu-repositorio
+    git clone https://github.com/VicRoUnix/python-docker-app.git
+    cd python-docker-app
     ```
 
 2.  **Crea el archivo `.env`:**
