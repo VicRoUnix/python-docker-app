@@ -2,18 +2,19 @@ import os
 import time
 import logging
 from flask import Flask, render_template, jsonify, request
-from redis import redis
+from redis import Redis
 import psycopg2
 from psycopg2 import OperationalError
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=('.'))
 
 # Configura el logging
 logging.basicConfig(level=logging.INFO)
 
 # ~ Conexion a Redis ~
 redis_host = os.environ.get('REDIS_HOST', 'localhost')
-redis_conn = redis(host=redis_host, port=6379, db=0, decode_responses=True)
+redis_port = int(os.environ.get('REDIS_PORT', 6379))
+redis_conn = Redis(host=redis_host, port=redis_port, db=0, decode_responses=True)
 
 def connect_to_redis():
     # Intenta conectarte a redis
@@ -35,17 +36,21 @@ def connect_to_redis():
 redis = connect_to_redis()
 
 # ~ Conexion a PostgreSQL ~
+db_host = os.environ.get('POSTGRES_HOST', 'localhost')
+db_name = os.environ.get('POSTGRES_DB')
+db_user = os.environ.get('POSTGRES_USER')
+db_password = os.environ.get('POSTGRES_PASSWORD')
 def connect_to_postgres():
     # Intenta conectarte a PostgreSQL 
-    logging.info(f"Intentando conectar a PostgreSQL")
+    logging.info(f"Intentando conectar a PostgreSQL en {db_host}")
     retries = 5
     while retries > 0:
         try:
             conn = psycopg2.connect(
-                dbname=os.environ.get('POSTGRES_DB'),
-                user=os.environ.get('POSTGRES_USER'),
-                password=os.environ.get('POSTGRES_PASSWORD'),
-                host=os.environ.get('POSTGRES_HOST')
+                dbname=db_name,
+                user=db_user,
+                password=db_password,
+                host=db_host
             )
             logging.info("Conectado a PostgreSQL correctamente =)")
             return conn
