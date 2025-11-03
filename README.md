@@ -50,6 +50,7 @@ El proyecto se ejecuta como un conjunto de servicios interconectados definidos e
 ├── .env                          # (Local - Ignorado por Git) Variables de entorno
 ├── docker-compose.yml            # Orquestador principal de todos los servicios
 └── README.md                     # Este archivo
+```
 
 ---
 
